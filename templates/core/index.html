@@ -44,22 +44,22 @@
             z-index: 1;
         }
 
-        .carousel-caption {
-            z-index: 2;
-            text-align: center;
-            max-width: 700px;
-            width: 80%;
-            margin: 0 auto;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            right: auto;
-        / transform: translate(- 50 %, - 50 %);
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 2rem;
-            border-radius: 10px;
-            box-sizing: border-box;
-        }
+.carousel-caption {
+    z-index: 2;
+    text-align: center;
+    max-width: 700px;
+    width: 80%; /* اضافه کردن محدودیت عرض */
+    margin: 0 auto;
+    position: absolute;
+    top: 50%;
+    left: 50%; /* مرکز افقی */
+    right: auto; /* حذف right احتمالی */
+    transform: translate(-50%, -50%); /* تراز کردن مرکز به مرکز */
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 2rem;
+    border-radius: 10px;
+    box-sizing: border-box; /* اطمینان از محاسبه padding در عرض */
+}
 
         .carousel-control-prev, .carousel-control-next {
             width: 5%;
@@ -96,65 +96,20 @@
             animation: pulse 5s infinite;
         }
 
-        @media (max-width: 576px) {
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
             .carousel-item {
-                height: 40vh;
-                min-height: 250px;
+                height: 50vh;
+                min-height: 300px;
             }
 
             .carousel-caption {
-                padding: 0.75rem;
-                width: 85%;
-                max-width: 85%;
-            / left: 50 %;
-                right: auto;
-                transform: translateX(-50%) translateY(-50%);
+                padding: 1rem;
+                max-width: 90%;
             }
 
             .carousel-caption h1 {
-                font-size: 1.4rem;
-                margin-bottom: 0.3rem;
-            }
-
-            .carousel-caption .lead {
-                font-size: 0.8rem;
-                margin-bottom: 0.4rem;
-            }
-
-            .carousel-control-prev, .carousel-control-next {
-                width: 10%;
-            }
-        }
-
-        @media (max-width: 320px) {
-            .carousel-item {
-                height: 35vh;
-                min-height: 200px;
-            }
-
-            .carousel-caption {
-                padding: 0.6rem;
-                width: 80%;
-                max-width: 80%;
-                /* مطمئن شویم کاملاً مرکز است */
-                left: 50%;
-                right: auto;
-                transform: translateX(-50%) translateY(-50%);
-            }
-
-            .carousel-caption h1 {
-                font-size: 1.1rem;
-                margin-bottom: 0.2rem;
-            }
-
-            .carousel-caption .lead {
-                font-size: 0.7rem;
-                margin-bottom: 0.2rem;
-            }
-
-            .carousel-caption .btn-lg {
-                font-size: 0.7rem;
-                padding: 0.2rem 0.6rem;
+                font-size: 2rem;
             }
         }
 
