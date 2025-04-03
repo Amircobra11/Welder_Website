@@ -1,10 +1,733 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %}تماس با ما | {{ site_settings.site_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(45deg, #1D1D1D, #2D3142) !important;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0.1;
+        z-index: 0;
+    }
+
+    .page-header:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(ellipse at center, rgba(255,107,0,0.3) 0%, rgba(29,29,29,0) 70%);
+        z-index: 1;
+        animation: pulse 5s infinite;
+    }
+
+    @keyframes pulse {
+        0% { opacity: 0.1; }
+        50% { opacity: 0.3; }
+        100% { opacity: 0.1; }
+    }
+
+    .page-header .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .contact-info {
+        border-right: 3px solid #FF6B00;
+        padding-right: 25px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .contact-info:hover {
+        transform: translateY(-5px);
+    }
+
+    .img-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, rgba(255,107,0,0.2), transparent);
+        transition: all 0.4s ease;
+    }
+
+    .map-container:hover .img-overlay {
+        background: linear-gradient(45deg, rgba(255,107,0,0.4), rgba(255,183,43,0.1));
+    }
+
+    .corner-spark {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,183,43,0.4) 50%, transparent 70%);
+        border-radius: 50%;
+        filter: blur(3px);
+        opacity: 0;
+    }
+
+    .top-right {
+        top: 5px;
+        right: 5px;
+        animation: spark-blink 4s infinite 1s;
+    }
+
+    .bottom-left {
+        bottom: 5px;
+        left: 5px;
+        animation: spark-blink 4s infinite 3s;
+    }
+
+    @keyframes spark-blink {
+        0% { opacity: 0; transform: scale(0.8); }
+        20% { opacity: 1; transform: scale(1.2); }
+        40% { opacity: 0; transform: scale(0.8); }
+        100% { opacity: 0; transform: scale(0.8); }
+    }
+
+    .info-item {
+        transition: transform 0.3s ease;
+    }
+
+    .info-item:hover {
+        transform: translateX(-5px);
+    }
+
+    .info-item i {
+        transition: all 0.3s ease;
+    }
+
+    .info-item:hover i {
+        transform: scale(1.2);
+        color: #FF6B00 !important;
+    }
+
+    .welding-sparkles {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .welding-sparkles:before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-image: radial-gradient(circle, #fff 1px, transparent 1px),
+                          radial-gradient(circle, #ffb72b 1px, transparent 1px);
+        background-size: 20px 20px;
+        background-position: 0 0, 10px 10px;
+        animation: sparkle-animation 60s linear infinite;
+        opacity: 0.05;
+    }
+
+    @keyframes sparkle-animation {
+        0% { background-position: 0 0, 10px 10px; }
+        100% { background-position: 1000px 1000px, 1010px 1010px; }
+    }
+
+    .hover-card {
+        transition: all 0.4s ease;
+        overflow: hidden;
+        z-index: 1;
+        border-radius: 8px;
+    }
+
+    .hover-card:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+    }
+
+    .hover-card:before {
+        content: '';
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        width: 0;
+        height: 0;
+        background: rgba(255,107,0,0.05);
+        z-index: -1;
+        transition: all 0.6s ease;
+    }
+
+    .hover-card:hover:before {
+        width: 200%;
+        height: 200%;
+    }
+
+    .contact-icon {
+        transition: all 0.4s ease;
+        position: relative;
+    }
+
+    .contact-icon:after {
+        content: '';
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        border-radius: 50%;
+        background: rgba(255,107,0,0.1);
+        z-index: -1;
+        transform: scale(0);
+        transition: all 0.4s ease;
+    }
+
+    .card:hover .contact-icon {
+        transform: rotateY(180deg);
+    }
+
+    .card:hover .contact-icon:after {
+        transform: scale(1);
+    }
+
+    .social-icon {
+        width: 40px;
+        height: 40px;
+        transition: all 0.3s ease;
+    }
+
+    .social-icon:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(255,107,0,0.3);
+    }
+
+    .section-heading {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-heading:after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        right: 0;
+        width: 70px;
+        height: 3px;
+        background: var(--primary-color);
+    }
+
+    h1, h2, h3, .section-title {
+        position: relative;
+    }
+
+    h1:after, h2:after, h3:after, .section-title:after {
+        content: '✨';
+        position: absolute;
+        top: 0;
+        right: -25px;
+        font-size: 0.5em;
+        opacity: 0;
+        animation: heading-spark 3s infinite;
+    }
+
+    @keyframes heading-spark {
+        0% { opacity: 0; transform: translateY(0); }
+        10% { opacity: 1; transform: translateY(-5px); }
+        20% { opacity: 0; transform: translateY(-10px); }
+        100% { opacity: 0; transform: translateY(-10px); }
+    }
+
+    .metal-bg {
+        background: linear-gradient(45deg, #1D1D1D, #2D3142) !important;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .welding-spark {
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        background: #FFB72B;
+        border-radius: 50%;
+        filter: blur(1px);
+        opacity: 0;
+        z-index: 10;
+        pointer-events: none;
+    }
+
+    @keyframes spark {
+        0% {
+            opacity: 1;
+            transform: translate(0, 0) scale(1);
+        }
+        100% {
+            opacity: 0;
+            transform: translate(var(--tx), var(--ty)) scale(0);
+        }
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: #FFB72B;
+    }
+
+    .spark {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .spark:after {
+        content: '';
+        position: absolute;
+        top: -100%;
+        left: -100%;
+        width: 300%;
+        height: 300%;
+        background: radial-gradient(circle, rgba(255,183,43,0.3) 0%, transparent 70%);
+        opacity: 0;
+        z-index: -1;
+        animation: spark-animation 5s infinite;
+    }
+
+    @keyframes spark-animation {
+        0% { transform: translate(0, 0); opacity: 0; }
+        20% { opacity: 0.3; transform: translate(-30%, -30%); }
+        40% { opacity: 0; transform: translate(-60%, -60%); }
+        100% { opacity: 0; transform: translate(-100%, -100%); }
+    }
+
+    .map-container {
+        position: relative;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+    }
+
+    .map-container:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #FF6B00;
+        box-shadow: 0 0 0 0.25rem rgba(255, 107, 0, 0.25);
+    }
+
+    .btn-primary {
+        background-color: #FF6B00;
+        border-color: #FF6B00;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #e65f00;
+        border-color: #e65f00;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(255, 107, 0, 0.3);
+    }
+
+    .contact-form {
+        transition: transform 0.3s ease;
+    }
+
+    .contact-form:hover {
+        transform: translateY(-5px);
+    }
+
+    .form-label {
+        position: relative;
+        display: inline-block;
+        padding-right: 15px;
+    }
+
+    .form-label:before {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 8px;
+        height: 8px;
+        background-color: #FF6B00;
+        border-radius: 50%;
+        opacity: 0.7;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="page-header py-5 mb-5 position-relative">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center text-white" data-aos="fade-up">
+                <h1 class="display-4 fw-bold spark">تماس با ما</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center bg-transparent">
+                        <li class="breadcrumb-item"><a href="{% url 'core:index' %}" class="text-white">خانه</a></li>
+                        <li class="breadcrumb-item active text-white-50" aria-current="page">تماس با ما</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="welding-sparkles"></div>
+</section>
+
+<section class="contact-section py-5">
+    <div class="container">
+        {% if messages %}
+        <div class="row mb-4">
+            <div class="col-md-12">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="row">
+            <!-- اطلاعات تماس -->
+            <div class="col-lg-4 mb-4" data-aos="fade-right">
+                <div class="contact-info bg-light p-4 rounded shadow-sm h-100 hover-card">
+                    <h3 class="mb-4 section-heading welding-icon">اطلاعات تماس</h3>
+
+                    {% if site_settings %}
+                    <div class="info-item d-flex mb-3">
+                        <div class="icon me-3">
+                            <i class="fas fa-map-marker-alt text-primary"></i>
+                        </div>
+                        <div class="text">
+                            <h5>آدرس</h5>
+                            <p class="mb-0">{{ site_settings.address }}</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item d-flex mb-3">
+                        <div class="icon me-3">
+                            <i class="fas fa-phone-alt text-primary"></i>
+                        </div>
+                        <div class="text">
+                            <h5>تلفن تماس</h5>
+                            <p class="mb-0"><a href="tel:{{ site_settings.phone }}" class="text-dark text-decoration-none">{{ site_settings.phone }}</a></p>
+                        </div>
+                    </div>
+
+                    <div class="info-item d-flex mb-3">
+                        <div class="icon me-3">
+                            <i class="fas fa-envelope text-primary"></i>
+                        </div>
+                        <div class="text">
+                            <h5>ایمیل</h5>
+                            <p class="mb-0"><a href="mailto:{{ site_settings.email }}" class="text-dark text-decoration-none">{{ site_settings.email }}</a></p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- شبکه‌های اجتماعی -->
+                    <div class="social-links mt-4">
+                        <h5 class="mb-3">ما را در شبکه‌های اجتماعی دنبال کنید</h5>
+                        <div class="d-flex mt-3">
+                            <a href="#" class="me-2 social-icon bg-primary text-white d-flex align-items-center justify-content-center rounded-circle spark">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="me-2 social-icon bg-primary text-white d-flex align-items-center justify-content-center rounded-circle spark">
+                                <i class="fab fa-telegram"></i>
+                            </a>
+                            <a href="#" class="me-2 social-icon bg-primary text-white d-flex align-items-center justify-content-center rounded-circle spark">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- فرم تماس -->
+            <div class="col-lg-8" data-aos="fade-left">
+                <div class="contact-form bg-light p-4 rounded shadow-sm hover-card">
+                    <h3 class="mb-4 section-heading welding-icon">ارسال پیام</h3>
+                    <p class="mb-4">برای تماس با ما و درخواست مشاوره یا سفارش پروژه، فرم زیر را تکمیل نمایید.</p>
+
+                    <form method="post" class="row g-3">
+                        {% csrf_token %}
+
+                        <div class="col-md-6">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">نام و نام خانوادگی *</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                            <div class="text-danger mt-1 small">
+                                {{ form.name.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">ایمیل *</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <div class="text-danger mt-1 small">
+                                {{ form.email.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="{{ form.phone.id_for_label }}" class="form-label">شماره تماس *</label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                            <div class="text-danger mt-1 small">
+                                {{ form.phone.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="{{ form.subject.id_for_label }}" class="form-label">موضوع *</label>
+                            {{ form.subject }}
+                            {% if form.subject.errors %}
+                            <div class="text-danger mt-1 small">
+                                {{ form.subject.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12">
+                            <label for="{{ form.message.id_for_label }}" class="form-label">پیام *</label>
+                            {{ form.message }}
+                            {% if form.message.errors %}
+                            <div class="text-danger mt-1 small">
+                                {{ form.message.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary px-4 py-2 spark">ارسال پیام</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- بخش نقشه -->
+<section class="map-section py-5 metal-bg position-relative">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-4" data-aos="fade-up">
+                <h2 class="section-title text-white spark">موقعیت ما روی نقشه</h2>
+            </div>
+            <div class="col-12" data-aos="fade-up">
+                <div class="map-container rounded shadow-sm overflow-hidden">
+                    <div class="img-overlay"></div>
+                    <div class="corner-spark top-right"></div>
+                    <div class="corner-spark bottom-left"></div>
+                    <div class="ratio ratio-21x9">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d207245.44303274754!2d51.25515993291016!3d35.697475077297416!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f8e00491ff3dcd9%3A0xf0b3697c567024bc!2sTehran%2C%20Tehran%20Province%2C%20Iran!5e0!3m2!1sen!2s!4v1617440788722!5m2!1sen!2s" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="welding-sparkles"></div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function createSparks() {
+            const sparkContainer = document.querySelector('body');
+            const weldingIcons = document.querySelectorAll('.welding-icon, .section-heading, .section-title');
+
+            weldingIcons.forEach(icon => {
+                setInterval(() => {
+                    const rect = icon.getBoundingClientRect();
+                    const e = {
+                        clientX: rect.right,
+                        clientY: rect.top + rect.height / 2
+                    };
+                    createSparkEffect(e, icon);
+                }, Math.random() * 3000 + 2000);
+            });
+
+            function createSparkEffect(e, element) {
+                const rect = element.getBoundingClientRect();
+
+                const sparkCount = 5 + Math.floor(Math.random() * 5);
+
+                for (let i = 0; i < sparkCount; i++) {
+                    const spark = document.createElement('div');
+                    spark.className = 'welding-spark';
+
+                    const startX = e.clientX || (rect.left + rect.width / 2);
+                    const startY = e.clientY || (rect.top + rect.height / 2);
+
+                    spark.style.left = `${startX}px`;
+                    spark.style.top = `${startY}px`;
+
+                    const size = 3 + Math.random() * 5;
+                    const hue = 30 + Math.random() * 30; 
+
+                    spark.style.width = `${size}px`;
+                    spark.style.height = `${size}px`;
+                    spark.style.backgroundColor = `hsl(${hue}, 100%, 60%)`;
+                    spark.style.boxShadow = `0 0 ${size * 2}px hsl(${hue}, 100%, 70%)`;
+
+                    const tx = (Math.random() - 0.5) * 100;
+                    const ty = (Math.random() - 0.5) * 100;
+                    spark.style.setProperty('--tx', `${tx}px`);
+                    spark.style.setProperty('--ty', `${ty}px`);
+
+                    const duration = 500 + Math.random() * 1000;
+                    spark.style.animation = `spark ${duration}ms forwards`;
+
+                    sparkContainer.appendChild(spark);
+                    setTimeout(() => {
+                        spark.remove();
+                    }, duration);
+                }
+            }
+        }
+
+        function createRandomSparks() {
+            const sparkContainers = document.querySelectorAll('.welding-sparkles');
+
+            sparkContainers.forEach(container => {
+                for (let i = 0; i < 15; i++) {
+                    const spark = document.createElement('div');
+                    spark.className = 'random-spark';
+                    spark.style.position = 'absolute';
+                    spark.style.width = '3px';
+                    spark.style.height = '3px';
+                    spark.style.background = '#FFB72B';
+                    spark.style.borderRadius = '50%';
+                    spark.style.filter = 'blur(1px)';
+                    spark.style.opacity = '0';
+                    spark.style.top = Math.random() * 100 + '%';
+                    spark.style.left = Math.random() * 100 + '%';
+                    spark.style.boxShadow = '0 0 5px #FFB72B, 0 0 10px #FF6B00';
+
+                    spark.style.animation = `random-spark ${2 + Math.random() * 4}s infinite ${Math.random() * 5}s`;
+
+                    container.appendChild(spark);
+                }
+            });
+
+            if (!document.getElementById('random-spark-keyframes')) {
+                const styleSheet = document.createElement('style');
+                styleSheet.id = 'random-spark-keyframes';
+                styleSheet.textContent = `
+                    @keyframes random-spark {
+                        0% { opacity: 0; transform: scale(0.4); }
+                        25% { opacity: 1; transform: scale(1); }
+                        50% { opacity: 0.6; transform: scale(0.7); }
+                        75% { opacity: 0.8; transform: scale(1.2); }
+                        100% { opacity: 0; transform: scale(0.4); }
+                    }
+                `;
+                document.head.appendChild(styleSheet);
+            }
+        }
+
+        function enhanceInfoIcons() {
+            const infoItems = document.querySelectorAll('.info-item');
+            infoItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    const icon = this.querySelector('i');
+                    icon.style.animation = 'iconBounce 0.7s ease';
+
+                    setTimeout(() => {
+                        icon.style.animation = '';
+                    }, 700);
+                });
+            });
+        }
+
+        function enhanceCards() {
+            const cards = document.querySelectorAll('.hover-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-15px)';
+                    this.style.boxShadow = '0 15px 30px rgba(0,0,0,0.1)';
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                    this.style.boxShadow = '';
+                });
+            });
+        }
+
+        function enhanceSocialIcons() {
+            const socialIcons = document.querySelectorAll('.social-icon');
+            socialIcons.forEach(icon => {
+                icon.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px) rotate(15deg)';
+                    this.style.boxShadow = '0 10px 20px rgba(255,107,0,0.2)';
+                });
+
+                icon.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                    this.style.boxShadow = '';
+                });
+            });
+        }
+
+        createSparks();
+        createRandomSparks();
+        enhanceInfoIcons();
+        enhanceCards();
+        enhanceSocialIcons();
+
+        const revealItems = () => {
+            const items = document.querySelectorAll('.hover-card, .contact-info, .contact-form, .map-container');
+
+            items.forEach(item => {
+                const position = item.getBoundingClientRect();
+
+                if (position.top < window.innerHeight && position.bottom > 0) {
+                    item.classList.add('revealed');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', revealItems);
+        revealItems();
+
+        const submitBtn = document.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.addEventListener('mouseenter', function() {
+                const rect = this.getBoundingClientRect();
+                const e = {
+                    clientX: rect.right,
+                    clientY: rect.top + rect.height / 2
+                };
+                createSparkEffect(e, this);
+            });
+        }
+
+        const mapContainer = document.querySelector('.map-container');
+        if (mapContainer) {
+            mapContainer.addEventListener('mouseenter', function() {
+                this.querySelectorAll('.corner-spark').forEach(spark => {
+                    spark.style.opacity = '1';
+                    setTimeout(() => {
+                        spark.style.opacity = '0';
+                    }, 1000);
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}
