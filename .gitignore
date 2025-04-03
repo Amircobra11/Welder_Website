@@ -1,0 +1,93 @@
+# ============================================================================
+# 🛑 DJANGO PROJECT GITIGNORE
+# ============================================================================
+
+# ============================================================================
+# 🐍 PYTHON & VIRTUAL ENVIRONMENTS
+# ============================================================================
+# Bytecode compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+.venv/
+venv/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+
+# ============================================================================
+# 💾 DATABASE FILES
+# ============================================================================
+# SQLite database files
+db.sqlite3
+db.sqlite3-journal
+
+# Redis database files
+dump.rdb
+
+# ============================================================================
+# 🔍 LOGS & DEBUGGING
+# ============================================================================
+# Log files
+logs/
+*.log
+debug.log
+npm-debug.log*
+
+# ============================================================================
+# 🖼️ MEDIA & STATIC FILES
+# ============================================================================
+# Media files
+media/
+uploads/
+
+# Static files
+static/
+staticfiles/
+
+# Image files
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.svg
+*.ico
+
+# ============================================================================
+# 🔧 DEVELOPMENT TOOLS & SETTINGS
+# ============================================================================
+# IDE settings
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+
+# Other system files
+.DS_Store
+Thumbs.db
+desktop.ini
