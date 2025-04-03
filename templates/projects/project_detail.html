@@ -1,10 +1,773 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %}{{ project.title }} | {{ site_settings.site_name }}{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .page-header {
+            background: linear-gradient(45deg, #1D1D1D, #2D3142) !important;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .page-header:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(255, 107, 0, 0.3) 0%, rgba(29, 29, 29, 0) 70%);
+            z-index: 1;
+            animation: pulse 5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 0.1;
+            }
+        }
+
+        .page-header .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .breadcrumb-item + .breadcrumb-item::before {
+            color: #FFB72B;
+        }
+
+        .project-gallery {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-right: 3px solid #FF6B00;
+        }
+
+        .project-gallery:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .carousel-item img {
+            height: 450px;
+            object-fit: cover;
+        }
+
+        .project-gallery-thumbs img {
+            height: 80px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .project-gallery-thumbs img:hover {
+            transform: translateY(-3px);
+            border-color: #FF6B00;
+        }
+
+        .project-description {
+            position: relative;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .project-description:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .project-description h2 {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-description h2:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background-color: #FF6B00;
+        }
+
+        .project-info-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 3px solid #FF6B00 !important;
+        }
+
+        .project-info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .project-info-card .card-header {
+            background-color: #FF6B00 !important;
+            border-bottom: none;
+        }
+
+        .list-group-item {
+            transition: transform 0.3s ease;
+            padding: 1rem 0;
+        }
+
+        .list-group-item:hover {
+            transform: translateX(-5px);
+            background-color: rgba(255, 107, 0, 0.05);
+        }
+
+        .list-group-item i {
+            color: #FF6B00 !important;
+        }
+
+        .contact-card, .related-services {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+
+        .contact-card:hover, .related-services:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .related-services .card-header {
+            background-color: #FF6B00 !important;
+            border-bottom: none;
+        }
+
+        .related-services a {
+            transition: all 0.3s ease;
+        }
+
+        .related-services a:hover {
+            color: #FF6B00 !important;
+            transform: translateX(-5px);
+        }
+
+        .project-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 3px solid transparent;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border-top-color: #FF6B00;
+        }
+
+        .project-card img {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .project-card .card-footer a {
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+        }
+
+        .project-card .card-footer a:after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #FF6B00;
+            transition: width 0.3s ease;
+        }
+
+        .project-card .card-footer a:hover:after {
+            width: 100%;
+        }
+
+        .section-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background-color: #FF6B00;
+        }
+
+        h1, h2, h3, h4, h5 {
+            position: relative;
+        }
+
+        h1:after, h2:after, h3:after {
+            content: '✨';
+            position: absolute;
+            top: 0;
+            right: -25px;
+            font-size: 0.5em;
+            opacity: 0;
+            animation: heading-spark 3s infinite;
+        }
+
+        @keyframes heading-spark {
+            0% {
+                opacity: 0;
+                transform: translateY(0);
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(-5px);
+            }
+            20% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+
+        .btn-primary {
+            background-color: #FF6B00 !important;
+            border-color: #FF6B00 !important;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px rgba(255, 107, 0, 0.2);
+        }
+
+        .btn-primary:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 183, 43, 0.3) 10%, transparent 70%);
+            transform: scale(0.5);
+            opacity: 0;
+            animation: btn-spark 3s infinite;
+        }
+
+        @keyframes btn-spark {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            20% {
+                opacity: 0.8;
+                transform: scale(1);
+            }
+            40% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+        }
+
+        .welding-spark {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #FFB72B;
+            border-radius: 50%;
+            filter: blur(1px);
+            opacity: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        @keyframes spark {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0);
+            }
+        }
+
+        .placeholder-img {
+            height: 450px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .placeholder-img:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(255, 107, 0, 0.1) 0%, rgba(29, 29, 29, 0) 70%);
+            z-index: 1;
+            animation: pulse 5s infinite;
+        }
+
+        .placeholder-img i {
+            position: relative;
+            z-index: 2;
+            color: #FF6B00 !important;
+            opacity: 0.7;
+        }
+
+        .welding-sparkles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .welding-sparkles:before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, #fff 1px, transparent 1px),
+            radial-gradient(circle, #ffb72b 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            animation: sparkle-animation 60s linear infinite;
+            opacity: 0.05;
+        }
+
+        @keyframes sparkle-animation {
+            0% {
+                background-position: 0 0, 10px 10px;
+            }
+            100% {
+                background-position: 1000px 1000px, 1010px 1010px;
+            }
+        }
+
+        .corner-spark {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 183, 43, 0.4) 50%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(3px);
+            opacity: 0;
+        }
+
+        .top-right {
+            top: 5px;
+            right: 5px;
+            animation: spark-blink 4s infinite 1s;
+        }
+
+        .bottom-left {
+            bottom: 5px;
+            left: 5px;
+            animation: spark-blink 4s infinite 3s;
+        }
+
+        @keyframes spark-blink {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            20% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+            40% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+
+        .spark {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spark:after {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: radial-gradient(circle, rgba(255, 183, 43, 0.3) 0%, transparent 70%);
+            opacity: 0;
+            z-index: -1;
+            animation: spark-animation 5s infinite;
+        }
+
+        @keyframes spark-animation {
+            0% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.3;
+                transform: translate(-30%, -30%);
+            }
+            40% {
+                opacity: 0;
+                transform: translate(-60%, -60%);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-100%, -100%);
+            }
+        }
+
+        .project-gallery {
+            position: relative;
+        }
+
+        .project-gallery:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 8px;
+            background: linear-gradient(45deg, rgba(255, 107, 0, 0.2), transparent);
+            opacity: 0;
+            z-index: 1;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .project-gallery:hover:before {
+            opacity: 1;
+        }
+
+        .project-gallery .corner-spark {
+            z-index: 2;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <!-- بخش سربرگ صفحه -->
+    <section class="page-header text-white py-5 mb-5 position-relative" data-aos="fade-down">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h1 class="welding-icon spark">{{ project.title }}</h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb justify-content-center bg-transparent">
+                            <li class="breadcrumb-item"><a href="{% url 'core:index' %}" class="text-white">خانه</a>
+                            </li>
+                            <li class="breadcrumb-item"><a href="{% url 'projects:project_list' %}" class="text-white">پروژه‌ها</a>
+                            </li>
+                            <li class="breadcrumb-item active text-white" aria-current="page">{{ project.title }}</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="welding-sparkles"></div>
+    </section>
+
+    <section class="project-detail py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mb-5 mb-lg-0" data-aos="fade-right" data-aos-delay="100">
+                    <div class="project-gallery mb-5 shadow-sm position-relative">
+                        <div class="corner-spark top-right"></div>
+                        <div class="corner-spark bottom-left"></div>
+                        <div id="projectCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                {% for image in project.images.all %}
+                                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                        <img src="{{ image.image.url }}" class="d-block w-100"
+                                             alt="{{ project.title }}">
+                                    </div>
+                                {% empty %}
+                                    <div class="carousel-item active">
+                                        <div class="placeholder-img bg-light d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-image fa-5x"></i>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% if project.images.count > 1 %}
+                                <button class="carousel-control-prev" type="button" data-bs-target="#projectCarousel"
+                                        data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">قبلی</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#projectCarousel"
+                                        data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">بعدی</span>
+                                </button>
+                            {% endif %}
+                        </div>
+
+                        {% if project.images.count > 1 %}
+                            <div class="project-gallery-thumbs mt-3 row g-2">
+                                {% for image in project.images.all %}
+                                    <div class="col-3 col-md-2">
+                                        <img src="{{ image.image.url }}" class="img-thumbnail" alt="{{ project.title }}"
+                                             data-bs-target="#projectCarousel"
+                                             data-bs-slide-to="{{ forloop.counter0 }}">
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="project-description shadow-sm position-relative" data-aos="fade-up"
+                         data-aos-delay="200">
+                        <h2 class="welding-icon mb-4 spark">توضیحات پروژه</h2>
+                        <div class="content">
+                            {{ project.description|linebreaks }}
+                        </div>
+                        <div class="corner-spark bottom-left"></div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4" data-aos="fade-left" data-aos-delay="300">
+                    <div class="project-info-card card border-0 shadow-sm position-relative">
+                        <div class="card-header">
+                            <h4 class="mb-0 text-white welding-icon spark">جزئیات پروژه</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    <span class="fw-bold"><i class="fas fa-user me-2"></i> کارفرما:</span>
+                                    <span>{{ project.client }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    <span class="fw-bold"><i class="fas fa-map-marker-alt me-2"></i> موقعیت:</span>
+                                    <span>{{ project.location }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    <span class="fw-bold"><i class="fas fa-calendar-check me-2"></i> تاریخ تکمیل:</span>
+                                    <span>{{ project.completion_date|date:"Y/m/d" }}</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="corner-spark top-right"></div>
+                    </div>
+
+                    <div class="contact-card card border-0 shadow-sm mt-4 position-relative" data-aos="fade-up"
+                         data-aos-delay="400">
+                        <div class="card-body bg-light">
+                            <h5 class="card-title welding-icon spark">نیاز به مشاوره دارید؟</h5>
+                            <p class="card-text">برای مشاوره رایگان و دریافت اطلاعات بیشتر در مورد خدمات جوشکاری ما با
+                                ما تماس بگیرید.</p>
+                            <a href="{% url 'contact:contact' %}" class="btn btn-primary spark">تماس با ما</a>
+                        </div>
+                        <div class="corner-spark bottom-left"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function createSparks() {
+                const sparkContainer = document.querySelector('body');
+                const sparkButtons = document.querySelectorAll('.btn-primary');
+                const weldingIcons = document.querySelectorAll('.welding-icon, .section-title, h1, h2, h3, h4, h5.card-title');
+
+                sparkButtons.forEach(button => {
+                    button.addEventListener('mouseover', function (e) {
+                        createSparkEffect(e, this);
+                    });
+
+                    button.addEventListener('click', function (e) {
+                        for (let i = 0; i < 10; i++) {
+                            setTimeout(() => {
+                                createSparkEffect(e, this);
+                            }, i * 50);
+                        }
+                    });
+                });
+
+                weldingIcons.forEach(icon => {
+                    setInterval(() => {
+                        const rect = icon.getBoundingClientRect();
+                        const e = {
+                            clientX: rect.right,
+                            clientY: rect.top + rect.height / 2
+                        };
+                        createSparkEffect(e, icon);
+                    }, Math.random() * 3000 + 2000);
+                });
+
+                function createSparkEffect(e, element) {
+                    const rect = element.getBoundingClientRect();
+
+                    const sparkCount = 5 + Math.floor(Math.random() * 5);
+
+                    for (let i = 0; i < sparkCount; i++) {
+                        const spark = document.createElement('div');
+                        spark.className = 'welding-spark';
+
+                        const startX = e.clientX || (rect.left + rect.width / 2);
+                        const startY = e.clientY || (rect.top + rect.height / 2);
+
+                        spark.style.left = `${startX}px`;
+                        spark.style.top = `${startY}px`;
+
+                        const size = 3 + Math.random() * 5;
+                        const hue = 30 + Math.random() * 30;
+
+                        spark.style.width = `${size}px`;
+                        spark.style.height = `${size}px`;
+                        spark.style.backgroundColor = `hsl(${hue}, 100%, 60%)`;
+                        spark.style.boxShadow = `0 0 ${size * 2}px hsl(${hue}, 100%, 70%)`;
+
+                        const tx = (Math.random() - 0.5) * 100;
+                        const ty = (Math.random() - 0.5) * 100;
+                        spark.style.setProperty('--tx', `${tx}px`);
+                        spark.style.setProperty('--ty', `${ty}px`);
+
+                        const duration = 500 + Math.random() * 1000;
+                        spark.style.animation = `spark ${duration}ms forwards`;
+
+                        sparkContainer.appendChild(spark);
+                        setTimeout(() => {
+                            spark.remove();
+                        }, duration);
+                    }
+                }
+            }
+
+            function enhanceListItems() {
+                const listItems = document.querySelectorAll('.list-group-item');
+                listItems.forEach(item => {
+                    item.addEventListener('mouseenter', function () {
+                        const icon = this.querySelector('i');
+                        if (icon) {
+                            icon.style.animation = 'iconBounce 0.7s ease';
+
+                            setTimeout(() => {
+                                icon.style.animation = '';
+                            }, 700);
+                        }
+                    });
+                });
+            }
+
+            function createRandomSparks() {
+                const sparkContainers = document.querySelectorAll('.welding-sparkles');
+
+                sparkContainers.forEach(container => {
+                    for (let i = 0; i < 15; i++) {
+                        const spark = document.createElement('div');
+                        spark.className = 'random-spark';
+                        spark.style.position = 'absolute';
+                        spark.style.width = '3px';
+                        spark.style.height = '3px';
+                        spark.style.background = '#FFB72B';
+                        spark.style.borderRadius = '50%';
+                        spark.style.filter = 'blur(1px)';
+                        spark.style.opacity = '0';
+                        spark.style.top = Math.random() * 100 + '%';
+                        spark.style.left = Math.random() * 100 + '%';
+                        spark.style.boxShadow = '0 0 5px #FFB72B, 0 0 10px #FF6B00';
+
+                        spark.style.animation = `random-spark ${2 + Math.random() * 4}s infinite ${Math.random() * 5}s`;
+
+                        container.appendChild(spark);
+                    }
+                });
+
+                if (!document.getElementById('random-spark-keyframes')) {
+                    const styleSheet = document.createElement('style');
+                    styleSheet.id = 'random-spark-keyframes';
+                    styleSheet.textContent = `
+                    @keyframes random-spark {
+                        0% { opacity: 0; transform: scale(0.4); }
+                        25% { opacity: 1; transform: scale(1); }
+                        50% { opacity: 0.6; transform: scale(0.7); }
+                        75% { opacity: 0.8; transform: scale(1.2); }
+                        100% { opacity: 0; transform: scale(0.4); }
+                    }
+                    
+                    @keyframes iconBounce {
+                        0% { transform: scale(1); }
+                        50% { transform: scale(1.3); }
+                        100% { transform: scale(1); }
+                    }
+                `;
+                    document.head.appendChild(styleSheet);
+                }
+            }
+
+            const thumbnails = document.querySelectorAll('.project-gallery-thumbs img');
+            thumbnails.forEach((thumb, index) => {
+                thumb.addEventListener('click', function () {
+                    const carousel = new bootstrap.Carousel(document.querySelector('#projectCarousel'));
+                    carousel.to(index);
+                });
+            });
+
+            createSparks();
+            enhanceListItems();
+            createRandomSparks();
+
+            const galleryImages = document.querySelectorAll('.carousel-item img');
+            galleryImages.forEach(img => {
+                img.addEventListener('mouseenter', function () {
+                    this.style.transition = 'transform 0.5s ease';
+                    this.style.transform = 'scale(1.05)';
+                });
+
+                img.addEventListener('mouseleave', function () {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+
+            AOS.refresh();
+        })
+    </script>
+{% endblock %}
